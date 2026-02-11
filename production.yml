@@ -1,0 +1,56 @@
+version: "3.8"
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  redis:
+    image: redis:latest
+    container_name: "${PROJECT_NAME}_redis"
+    hostname: redis
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  postgres:
+    container_name: "${PROJECT_NAME}_postgres"
+    image: postgres:18
+    hostname: postgres
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_HOST: "${POSTGRES_HOST}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: "${PROJECT_NAME}_app"
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    environment:
+      - DEBUG=${DEBUG:-0}
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:

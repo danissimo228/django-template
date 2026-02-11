@@ -38,9 +38,20 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
+    'default': env.db('DATABASE_URL'),
+    'CONN_MAX_AGE': 30,
+    'DJANGO_ATOMIC_REQUESTS': True,
+    'DJANGO_ALLOW_ASYNC_UNSAFE': True
+}
+# https://docs.djangoproject.com/en/dev/ref/settings/#caches
+REDIS_URL = env('REDIS_URL', 'redis://localhost:6379/0')
+CACHES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }
 # ------------------------------------------------------------------------------
@@ -50,6 +61,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,8 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 # ------------------------------------------------------------------------------
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -125,7 +135,15 @@ INSTALLED_APPS = [
 
 # STATIC
 # ------------------------------------------------------------------------------
-# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
+STATICFILES_DIRS = [str(BASE_DIR / "static")]
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 # ------------------------------------------------------------------------------
