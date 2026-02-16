@@ -13,8 +13,14 @@ env = environ.Env()
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
+# Create dir for log files
+LOG_DIR = BASE_DIR / "logs"
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
 # GENERAL
 # ------------------------------------------------------------------------------
+PROJECT_NAME = env.str("PROJECT_NAME")
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DEBUG")
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -142,7 +148,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = []
 
-LOCAL_APPS = ['apps.users']
+LOCAL_APPS = ["apps.users"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # ------------------------------------------------------------------------------

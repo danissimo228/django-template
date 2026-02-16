@@ -7,6 +7,7 @@ class Command(BaseCommand):
     """
     Django command class for creating an administrator for the admin panel
     """
+
     help = "Creating administrator"
 
     def handle(self, *args, **options) -> None:
