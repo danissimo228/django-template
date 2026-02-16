@@ -2,6 +2,7 @@
 python manage.py collectstatic --noinput || exit 1
 python3 manage.py makemigrations || exit 1
 python3 manage.py migrate || exit 1
+python3 manage.py create_admin_user || exit 1
 
 python -m gunicorn \
   --workers ${WORKERS_COUNT:-2} \

@@ -1,1 +1,7 @@
-from .base import *  # noqa
+"""
+Production settings
+"""
+
+from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import
+
+DEBUG = False
