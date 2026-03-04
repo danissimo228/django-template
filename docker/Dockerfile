@@ -17,4 +17,4 @@ COPY . /app/
 
 EXPOSE 8000
 
-CMD ["sh", "docker/start.sh"]
+CMD ["sh", "scripts/start.sh"]
