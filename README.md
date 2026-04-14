@@ -1,1 +1,1 @@
-# ninja-template
+# 🚀 django-template
